@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotelFlow | Hotel Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">H</div>
+            <div>
+                <h2>HotelFlow</h2>
+                <small>Management System</small>
+            </div>
+        </div>
+
+        <div class="menu-label">MAIN MENU</div>
+
+        <nav class="navigation">
+            <button class="nav-item active" data-page="dashboard">
+                <span>▦</span> Dashboard
+            </button>
+            <button class="nav-item" data-page="rooms">
+                <span>▤</span> จัดการห้องพัก
+            </button>
+            <button class="nav-item" data-page="bookings">
+                <span>▣</span> รายการจอง
+            </button>
+            <button class="nav-item" data-page="guests">
+                <span>♙</span> ข้อมูลลูกค้า
+            </button>
+            <button class="nav-item" data-page="availability">
+                <span>▦</span> ปฏิทินห้องพัก
+            </button>
+            <button class="nav-item" data-page="housekeeping">
+                <span>✧</span> แม่บ้าน / ทำความสะอาด
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="hotel-card">
+                <div class="hotel-avatar">HF</div>
+                <div>
+                    <strong>FlipFlow Hotel</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h2 id="page-title">Dashboard</h2>
+                <p id="page-subtitle">ภาพรวมการดำเนินงานของโรงแรม</p>
+            </div>
+
+            <div class="topbar-right">
+                <div class="today" id="today"></div>
+                <button class="primary-btn" onclick="openBookingModal()">
+                    + สร้างการจอง
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <section class="page active" id="dashboard">
+
+            <div class="welcome">
+                <div>
+                    <h2>ยินดีต้อนรับสู่ HotelFlow</h2>
+                    <p>จัดการห้องพัก การจอง และการให้บริการภายในโรงแรมได้จากที่เดียว</p>
+                </div>
+                <div class="welcome-icon">🏨</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple">▤</div>
+                    <div>
+                        <p>ห้องพักทั้งหมด</p>
+                        <h2 id="total-rooms">0</h2>
+                        <small>ห้องพักในระบบ</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div>
+                        <p>ห้องว่าง</p>
+                        <h2 id="available-rooms">0</h2>
+                        <small>พร้อมให้บริการ</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">▣</div>
+                    <div>
+                        <p>รายการจอง</p>
+                        <h2 id="total-bookings">0</h2>
+                        <small>รายการจองทั้งหมด</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">♙</div>
+                    <div>
+                        <p>ลูกค้าทั้งหมด</p>
+                        <h2 id="total-guests">0</h2>
+                        <small>ข้อมูลลูกค้าในระบบ</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>รายการจองล่าสุด</h3>
+                            <p>ข้อมูลการจองห้องพักล่าสุด</p>
+                        </div>
+                        <button class="text-btn" onclick="showPage('bookings')">ดูทั้งหมด →</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>รหัสจอง</th>
+                                    <th>ลูกค้า</th>
+                                    <th>วันที่เข้าพัก</th>
+                                    <th>สถานะ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-bookings"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>สถานะห้องพัก</h3>
+                            <p>ภาพรวมสถานะห้องพัก</p>
+                        </div>
+                    </div>
+
+                    <div class="room-summary">
+                        <div class="summary-row">
+                            <span><i class="dot green-dot"></i> ห้องว่าง</span>
+                            <strong id="summary-available">0</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span><i class="dot red-dot"></i> มีผู้เข้าพัก</span>
+                            <strong id="summary-occupied">0</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span><i class="dot orange-dot"></i> กำลังทำความสะอาด</span>
+                            <strong id="summary-cleaning">0</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span><i class="dot gray-dot"></i> ปิดปรับปรุง</span>
+                            <strong id="summary-maintenance">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROOMS -->
+        <section class="page" id="rooms">
+            <div class="section-heading">
+                <div>
+                    <h2>จัดการห้องพัก</h2>
+                    <p>เพิ่ม แก้ไข ค้นหา และจัดการข้อมูลห้องพัก</p>
+                </div>
+                <button class="primary-btn" onclick="openRoomModal()">+ เพิ่มห้องพัก</button>
+            </div>
+
+            <div class="toolbar">
+                <input type="text" id="room-search" placeholder="ค้นหาหมายเลขห้อง..." oninput="renderRooms()">
+                <select id="room-filter" onchange="renderRooms()">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="Available">ห้องว่าง</option>
+                    <option value="Occupied">มีผู้เข้าพัก</option>
+                    <option value="Cleaning">กำลังทำความสะอาด</option>
+                    <option value="Maintenance">ปิดปรับปรุง</option>
+                </select>
+            </div>
+
+            <div class="room-grid" id="room-list"></div>
+        </section>
+
+        <!-- BOOKINGS -->
+        <section class="page" id="bookings">
+            <div class="section-heading">
+                <div>
+                    <h2>รายการจองห้องพัก</h2>
+                    <p>ตรวจสอบและจัดการรายการจองทั้งหมด</p>
+                </div>
+                <button class="primary-btn" onclick="openBookingModal()">+ สร้างการจอง</button>
+            </div>
+
+            <div class="toolbar">
+                <input type="text" id="booking-search" placeholder="ค้นหารหัสจองหรือชื่อลูกค้า..." oninput="renderBookings()">
+                <select id="booking-filter" onchange="renderBookings()">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="Confirmed">ยืนยันแล้ว</option>
+                    <option value="Checked-in">เช็กอินแล้ว</option>
+                    <option value="Checked-out">เช็กเอาต์แล้ว</option>
+                    <option value="Cancelled">ยกเลิก</option>
+                </select>
+            </div>
+
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>รหัสจอง</th>
+                                <th>ลูกค้า</th>
+                                <th>ห้องพัก</th>
+                                <th>เช็กอิน</th>
+                                <th>เช็กเอาต์</th>
+                                <th>ราคา</th>
+                                <th>สถานะ</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booking-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- GUESTS -->
+        <section class="page" id="guests">
+            <div class="section-heading">
+                <div>
+                    <h2>จัดการข้อมูลลูกค้า</h2>
+                    <p>เพิ่ม แก้ไข และค้นหาข้อมูลลูกค้า</p>
+                </div>
+                <button class="primary-btn" onclick="openGuestModal()">+ เพิ่มลูกค้า</button>
+            </div>
+
+            <div class="toolbar">
+                <input type="text" id="guest-search" placeholder="ค้นหาชื่อ เบอร์โทร หรืออีเมล..." oninput="renderGuests()">
+            </div>
+
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>รหัสลูกค้า</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>เบอร์โทรศัพท์</th>
+                                <th>อีเมล</th>
+                                <th>จำนวนการจอง</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- AVAILABILITY -->
+        <section class="page" id="availability">
+            <div class="section-heading">
+                <div>
+                    <h2>ปฏิทินห้องพัก</h2>
+                    <p>ตรวจสอบสถานะการจองห้องพักตามวันที่</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="calendar-toolbar">
+                    <button class="secondary-btn" onclick="changeCalendarMonth(-1)">← เดือนก่อน</button>
+                    <h3 id="calendar-month"></h3>
+                    <button class="secondary-btn" onclick="changeCalendarMonth(1)">เดือนถัดไป →</button>
+                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+
+            <div class="legend">
+                <span><i class="dot green-dot"></i> ว่าง</span>
+                <span><i class="dot red-dot"></i> มีการจอง</span>
+            </div>
+        </section>
+
+        <!-- HOUSEKEEPING -->
+        <section class="page" id="housekeeping">
+            <div class="section-heading">
+                <div>
+                    <h2>จัดการงานแม่บ้าน</h2>
+                    <p>อัปเดตสถานะการทำความสะอาดห้องพัก</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ห้องพัก</th>
+                                <th>ประเภทห้อง</th>
+                                <th>สถานะปัจจุบัน</th>
+                                <th>เปลี่ยนสถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="housekeeping-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ROOM MODAL -->
+<div class="modal" id="room-modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="room-modal-title">เพิ่มห้องพัก</h3>
+            <button class="close-btn" onclick="closeModal('room-modal')">×</button>
+        </div>
+
+        <form id="room-form">
+            <input type="hidden" id="room-edit-id">
+
+            <label>หมายเลขห้อง</label>
+            <input id="room-number" required placeholder="เช่น 101">
+
+            <label>ประเภทห้อง</label>
+            <select id="room-type" required>
+                <option value="Standard">Standard</option>
+                <option value="Deluxe">Deluxe</option>
+                <option value="Suite">Suite</option>
+            </select>
+
+            <label>ราคาต่อคืน (บาท)</label>
+            <input type="number" id="room-price" min="1" required>
+
+            <label>สถานะห้อง</label>
+            <select id="room-status">
+                <option value="Available">ห้องว่าง</option>
+                <option value="Occupied">มีผู้เข้าพัก</option>
+                <option value="Cleaning">กำลังทำความสะอาด</option>
+                <option value="Maintenance">ปิดปรับปรุง</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" onclick="closeModal('room-modal')">ยกเลิก</button>
+                <button type="submit" class="primary-btn">บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- GUEST MODAL -->
+<div class="modal" id="guest-modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="guest-modal-title">เพิ่มข้อมูลลูกค้า</h3>
+            <button class="close-btn" onclick="closeModal('guest-modal')">×</button>
+        </div>
+
+        <form id="guest-form">
+            <input type="hidden" id="guest-edit-id">
+
+            <label>ชื่อ-นามสกุล</label>
+            <input id="guest-name" required>
+
+            <label>เบอร์โทรศัพท์</label>
+            <input id="guest-phone" required>
+
+            <label>อีเมล</label>
+            <input id="guest-email" type="email" required>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" onclick="closeModal('guest-modal')">ยกเลิก</button>
+                <button type="submit" class="primary-btn">บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal" id="booking-modal">
+    <div class="modal-box large-modal">
+        <div class="modal-header">
+            <h3>สร้างรายการจองห้องพัก</h3>
+            <button class="close-btn" onclick="closeModal('booking-modal')">×</button>
+        </div>
+
+        <form id="booking-form">
+            <label>เลือกลูกค้า</label>
+            <select id="booking-guest" required></select>
+
+            <div class="form-row">
+                <div>
+                    <label>วันที่เช็กอิน</label>
+                    <input type="date" id="checkin-date" required>
+                </div>
+                <div>
+                    <label>วันที่เช็กเอาต์</label>
+                    <input type="date" id="checkout-date" required>
+                </div>
+            </div>
+
+            <label>เลือกห้องพัก (เลือกได้หลายห้อง)</label>
+            <div class="select-rooms" id="booking-room-options"></div>
+
+            <div class="booking-total">
+                <span>ราคารวมทั้งหมด</span>
+                <strong id="booking-total">฿0</strong>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" onclick="closeModal('booking-modal')">ยกเลิก</button>
+                <button type="submit" class="primary-btn">ยืนยันการจอง</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal" id="detail-modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>รายละเอียดการจอง</h3>
+            <button class="close-btn" onclick="closeModal('detail-modal')">×</button>
+        </div>
+        <div id="booking-detail-content"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
